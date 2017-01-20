@@ -34,8 +34,6 @@ import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import android.support.v4.content.FileProvider;
-
 public class SocialSharing extends CordovaPlugin {
 
   private static final String ACTION_AVAILABLE_EVENT = "available";
@@ -171,7 +169,6 @@ public class SocialSharing extends CordovaPlugin {
           }
         } catch (Exception e) {
           callbackContext.error(e.getMessage());
-          return;
         }
 
         // this was added to start the intent in a new window as suggested in #300 to prevent crashes upon return
@@ -246,7 +243,6 @@ public class SocialSharing extends CordovaPlugin {
               Uri fileUri = null;
               for (int i = 0; i < files.length(); i++) {
                 fileUri = getFileUriAndSetType(sendIntent, dir, files.getString(i), subject, i);
-                fileUri = FileProvider.getUriForFile(webView.getContext(), cordova.getActivity().getPackageName()+".sharing.provider", new File(fileUri.getPath()));
                 if (fileUri != null) {
                   fileUris.add(fileUri);
                 }
@@ -436,7 +432,7 @@ public class SocialSharing extends CordovaPlugin {
       final String encodedImg = image.substring(image.indexOf(";base64,") + 8);
       sendIntent.setType(fileType);
       saveFile(Base64.decode(encodedImg, Base64.DEFAULT), dir, sanitizeFilename(fileName));
-      localImage = "file://" + dir + "/" + sanitizeFilename(fileName);
+      localImage = "file://" + dir + "/" + fileName;
     } else if (!image.startsWith("file://")) {
       throw new IllegalArgumentException("URL_NOT_SUPPORTED");
     } else {
